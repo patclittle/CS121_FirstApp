@@ -15,10 +15,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var targetLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var roundLabel: UILabel!
+    @IBOutlet weak var powerUpButton: UIButton!
     var currentVal: Int = 0
     var target = 0
     var score = 0
     var round = 0
+    var powerUpCounter = 3
+    var power = 1
 
     //Called on view load
     override func viewDidLoad() {
@@ -42,6 +45,8 @@ class ViewController: UIViewController {
             let sliderTrackRightResizable = sliderTrackRightImage.resizableImageWithCapInsets(insets)
             slider.setMaximumTrackImage(sliderTrackRightResizable, forState: .Normal)
         }
+        
+        updatePowerButton()
         
         //Start new round
         newRound()
@@ -94,7 +99,7 @@ class ViewController: UIViewController {
             message = "Whoops! Are you even trying?"
         }
         
-        score += pts
+        score += pts*power
         
         //Create alert, add dismissal action
         let alert = UIAlertController(title: message,
@@ -107,6 +112,8 @@ class ViewController: UIViewController {
         
         alert.addAction(action)
         
+        power=1
+        
         
         //Show alert
         presentViewController(alert, animated: true, completion: nil)
@@ -116,6 +123,9 @@ class ViewController: UIViewController {
     @IBAction func startOver(){
         score = 0
         round = 0
+        power = 1
+        powerUpCounter = 3
+        updatePowerButton()
         newRound()
         
         //Add transition to new game
@@ -125,6 +135,18 @@ class ViewController: UIViewController {
         transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         
         view.layer.addAnimation(transition, forKey: nil)
+    }
+    
+    func updatePowerButton(){
+        powerUpButton.setTitle("2x! (\(powerUpCounter)/3)", forState: .Normal)
+    }
+    
+    @IBAction func powerUp(){
+        if powerUpCounter > 0{
+            powerUpCounter--
+            power = 2
+        }
+        updatePowerButton()
     }
     
     
